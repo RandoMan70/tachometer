@@ -7,7 +7,7 @@ const int MAX_RECENT=16;
 const byte IGNITION_PIN = 4;
 
 microLED< NUMLEDS, STRIP_PIN, MLED_NO_CLOCK, LED_WS2812, ORDER_GRB, CLI_LOW> strip;
-rpmCounter counter(7500, 2000, 4, 2);
+RPMCounter<16, 7500, 2000, 4, 2> counter;
 //
 //const int32_t IGNITION_MIN_DELAY = 2000;
 //const int32_t IGNITION_MAX_INTERVAL = 1000000;

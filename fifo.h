@@ -12,12 +12,15 @@
     MIT License
     Версии:
     v1.0 - релиз
+
+    Изменения от RandoMan70:
+      - добавлена возможность получить самый новый элемент очереди
 */
 
-#ifndef GyverFIFO_h
-#define GyverFIFO_h
+#ifndef ExtendedGyverFIFO_h
+#define ExtendedGyverFIFO_h
 template < typename TYPE, int SIZE >
-class GyverFIFO {
+class ExtendedGyverFIFO {
 public:
     // запись в буфер. Вернёт true при успешной записи
     bool write(TYPE newVal) {
@@ -49,8 +52,13 @@ public:
     }
 
     // возвращает самое новое значение без удаления из буфера
-    TYPE peek_newest() {
+    TYPE newest() {
         return buffer[head];
+    }
+
+    // синоним для peek()
+    TYPE oldest() {
+        return peek();
     }
 
     // вернёт количество непрочитанных элементов
