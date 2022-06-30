@@ -1,7 +1,11 @@
 #define TRIGGER_RISING 0
 #define TRIGGER_FALLING 1
 
+#ifdef RUN_TEST
 #include <stdio.h>
+#else
+#define printf(...) {}
+#endif
 
 typedef void (*TriggerCb)(uint32_t timestamp, void *arg) ;
 typedef void (*TimeoutCb)(void *arg) ;
