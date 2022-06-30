@@ -59,7 +59,7 @@ void setup() {
   Serial.begin(115200);
   pinMode(IGNITION_PIN, INPUT);
 
-  strip.setBrightness(50);
+  strip.setBrightness(10);
   strip.clear();
   strip.show();
 }
