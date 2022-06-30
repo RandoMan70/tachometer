@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "fifo.h"
 
-template <int SIZE, int SCALING, int MAX_RPM, int MAX_LATENCY, int MIN_DEPTH>
+template <uint32_t SIZE, uint32_t SCALING, uint32_t MAX_RPM, uint32_t MAX_LATENCY, uint32_t MIN_DEPTH>
 class RPMCounter {
 public:
   RPMCounter() {
@@ -27,11 +27,10 @@ public:
       history.read();
     }
   
-    // Intsert record
+    // Insert record
     history.write(now_mks);
-    
   }
-  int rpm() {
+  uint32_t rpm() {
     // We should have at least min_count entries
     uint32_t count = history.available();
     if (count < min_count) {
@@ -39,7 +38,8 @@ public:
     }
   
     uint32_t interval = history.newest() - history.oldest();
-    return (uint32_t)60000000 / scaling * count / interval;
+    uint32_t rpm = (uint32_t)60000000 / scaling * (count - 1) / interval;
+    return rpm;
   }
   
 private:

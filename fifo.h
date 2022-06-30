@@ -27,6 +27,7 @@ public:
         uint8_t i = (head + 1) % SIZE;  // положение нового значения в буфере
         if (i != tail) {             // если есть местечко
             buffer[head] = newVal;    // пишем в буфер
+            head_element = head;
             head = i;                 // двигаем голову
             return true;
         } else return false;
@@ -53,7 +54,7 @@ public:
 
     // возвращает самое новое значение без удаления из буфера
     TYPE newest() {
-        return buffer[head];
+        return buffer[head_element];
     }
 
     // синоним для peek()
@@ -73,6 +74,6 @@ public:
 
 private:
     TYPE buffer[SIZE];
-    int head = 0, tail = 0;
+    int head = 0, tail = 0, head_element = 0;
 };
 #endif
