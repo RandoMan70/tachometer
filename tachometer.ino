@@ -6,7 +6,6 @@ const int LOW_BORDER = 3500;
 const int SWITCH_BORDER = 6800;
 const int HIGH_BORDER = 7200;
 
-
 const int NUMLEDS = 64;
 const int STRIP_PIN = 7;
 const int MAX_RECENT=16;
@@ -15,11 +14,11 @@ const byte IGNITION_PIN = 4;
 void ignition(uint32_t timestamp, void * arg);
 void timeout(void *);
 microLED< NUMLEDS, STRIP_PIN, MLED_NO_CLOCK, LED_WS2812, ORDER_GRB, CLI_LOW> strip;
-RPMCounter<9, 2, 7500, 200000, 2> counter;
+RPMCounter<9, 2, 8500, 200000, 2> counter;
 Trigger trigger(TRIGGER_FALLING, 200, ignition, NULL, 1000000, timeout, NULL);
 
 void draw(uint32_t rpm) {
-  int bar = rpm * (uint32_t) NUMLEDS / (uint32_t) 7500;
+  int bar = rpm / 125;
   mData color = mBlue;
   if (rpm > HIGH_BORDER) {
     color = mRed;    
@@ -30,19 +29,23 @@ void draw(uint32_t rpm) {
   }
 
   for (int i = 0; i < NUMLEDS; i++) {
+    if (i % 8 == 0) {
+      strip.leds[i] = mWhite;
+      continue;
+    }
+
     if (i < bar) {
       strip.leds[i] = color;
     } else {
       strip.leds[i] = mBlack;
     }
   }
-  strip.show();
   
-  Serial.println(rpm, bar);
+  strip.show();
 }
 
 void timeout(void *) {
-  Serial.println("Line timeout");
+//  Serial.println("Line timeout");
 }
 
 void ignition(uint32_t timestamp, void *) {
@@ -54,17 +57,21 @@ void setup() {
   Serial.begin(115200);
   pinMode(IGNITION_PIN, INPUT);
 
-  strip.setBrightness(3);
+  strip.setBrightness(10);
   strip.clear();
   strip.show();
 }
 
 void loop() {
 //  trigger.update(digitalRead(IGNITION_PIN), micros());
-  for (int i = 0; i <= 7500; i++) {
+  for (int i = 0; i <= 8000; i+=10) {
     draw(i);
   }
-  for (int i = 7500; i >= 0; i--) {
+  for (int i = 8000; i >= 0; i-=10) {
     draw(i);
   }
+//  for (int i = 0; i < 64; i++) {
+//    strip.leds[i] = mBlue;
+//    strip.show();
+//  }
 }
