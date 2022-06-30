@@ -3,10 +3,10 @@
 #include "trigger.h"
 
 const int LOW_BORDER = 3500;
-const int SWITCH_BORDER = 6800;
-const int HIGH_BORDER = 7200;
+const int SWITCH_BORDER = 6500;
+const int HIGH_BORDER = 7500;
 
-const int NUMLEDS = 64;
+const int NUMLEDS = 32;
 const int STRIP_PIN = 7;
 const int MAX_RECENT=16;
 const byte IGNITION_PIN = 4;
@@ -18,7 +18,8 @@ RPMCounter<9, 2, 8500, 200000, 2> counter;
 Trigger trigger(TRIGGER_FALLING, 200, ignition, NULL, 1000000, timeout, NULL);
 
 void draw(uint32_t rpm) {
-  int bar = rpm / 125;
+  int bar = rpm / 250;
+
   mData color = mBlue;
   if (rpm > HIGH_BORDER) {
     color = mRed;    
@@ -29,7 +30,7 @@ void draw(uint32_t rpm) {
   }
 
   for (int i = 0; i < NUMLEDS; i++) {
-    if (i % 8 == 0) {
+    if (i % 4 == 0) {
       strip.leds[i] = mWhite;
       continue;
     }
@@ -45,7 +46,8 @@ void draw(uint32_t rpm) {
 }
 
 void timeout(void *) {
-//  Serial.println("Line timeout");
+  strip.clear();
+  strip.show();
 }
 
 void ignition(uint32_t timestamp, void *) {
@@ -57,21 +59,11 @@ void setup() {
   Serial.begin(115200);
   pinMode(IGNITION_PIN, INPUT);
 
-  strip.setBrightness(10);
+  strip.setBrightness(50);
   strip.clear();
   strip.show();
 }
 
 void loop() {
-//  trigger.update(digitalRead(IGNITION_PIN), micros());
-  for (int i = 0; i <= 8000; i+=10) {
-    draw(i);
-  }
-  for (int i = 8000; i >= 0; i-=10) {
-    draw(i);
-  }
-//  for (int i = 0; i < 64; i++) {
-//    strip.leds[i] = mBlue;
-//    strip.show();
-//  }
+  trigger.update(digitalRead(IGNITION_PIN), micros());
 }
