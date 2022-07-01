@@ -11,6 +11,14 @@ const int STRIP_PIN = 7;
 const int MAX_RECENT=16;
 const byte IGNITION_PIN = 4;
 
+const int L = 160;
+const int H = 255;
+
+mData mLightBlue   = mRGB(L, L, H);
+mData mLightGreen  = mRGB(L, H, L);
+mData mLightYellow = mRGB(H, H, L);
+mData mLightRed    = mRGB(H, L, L);
+
 void ignition(uint32_t timestamp, void * arg);
 void timeout(void *);
 microLED< NUMLEDS, STRIP_PIN, MLED_NO_CLOCK, LED_WS2812, ORDER_GRB, CLI_LOW> strip;
@@ -21,24 +29,31 @@ void draw(uint32_t rpm) {
   int bar = rpm / 250;
 
   mData color = mBlue;
+  mData divisionColor = mLightBlue;
   if (rpm > HIGH_BORDER) {
     color = mRed;    
+    divisionColor = mLightRed;    
   } else if (rpm > SWITCH_BORDER) {
     color = mYellow;
+    divisionColor = mLightYellow;
   } else if (rpm > LOW_BORDER) {
     color = mGreen;
+    divisionColor = mLightGreen;
   }
 
   for (int i = 0; i < NUMLEDS; i++) {
-    if (i % 4 == 0) {
-      strip.leds[i] = mWhite;
-      continue;
-    }
-
-    if (i < bar) {
-      strip.leds[i] = color;
+    if (i <= bar) {
+      if ((i + 1) % 4 == 0) {
+        strip.leds[i] = divisionColor;
+      } else {
+        strip.leds[i] = color;
+      }
     } else {
-      strip.leds[i] = mBlack;
+      if ((i + 1) % 4 == 0) {
+        strip.leds[i] = mWhite;
+      } else {
+        strip.leds[i] = mBlack;
+      }
     }
   }
   
@@ -59,7 +74,7 @@ void setup() {
   Serial.begin(115200);
   pinMode(IGNITION_PIN, INPUT);
 
-  strip.setBrightness(10);
+  strip.setBrightness(48);
   strip.clear();
   strip.show();
 }
