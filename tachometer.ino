@@ -11,8 +11,16 @@ const int STRIP_PIN = 7;
 const int MAX_RECENT=16;
 const byte IGNITION_PIN = 4;
 
+const int dL = 80;
+const int dH = 128;
+
 const int L = 160;
 const int H = 255;
+
+mData mDarkBlue   = mRGB(dL, dL, dH);
+mData mDarkGreen  = mRGB(dL, dH, dL);
+mData mDarkYellow = mRGB(dH, dH, dL);
+mData mDarkRed    = mRGB(dH, dL, dL);
 
 mData mLightBlue   = mRGB(L, L, H);
 mData mLightGreen  = mRGB(L, H, L);
@@ -30,15 +38,19 @@ void draw(uint32_t rpm) {
 
   mData color = mBlue;
   mData divisionColor = mLightBlue;
+  mData inactiveColor = mDarkBlue;
   if (rpm > HIGH_BORDER) {
     color = mRed;    
-    divisionColor = mLightRed;    
+    divisionColor = mLightRed;
+    inactiveColor = mDarkRed;
   } else if (rpm > SWITCH_BORDER) {
     color = mYellow;
     divisionColor = mLightYellow;
+    inactiveColor = mDarkYellow;
   } else if (rpm > LOW_BORDER) {
     color = mGreen;
     divisionColor = mLightGreen;
+    inactiveColor = mDarkGreen;
   }
 
   for (int i = 0; i < NUMLEDS; i++) {
@@ -52,7 +64,7 @@ void draw(uint32_t rpm) {
       if ((i + 1) % 8 == 0) {
         strip.leds[i] = mWhite;
       } else {
-        strip.leds[i] = mBlack;
+        strip.leds[i] = inactiveColor;
       }
     }
   }
