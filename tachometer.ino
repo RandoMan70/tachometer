@@ -6,7 +6,7 @@ const int LOW_BORDER = 3500;
 const int SWITCH_BORDER = 6500;
 const int HIGH_BORDER = 7500;
 
-const int NUMLEDS = 32;
+const int NUMLEDS = 72;
 const int STRIP_PIN = 7;
 const int MAX_RECENT=16;
 const byte IGNITION_PIN = 4;
@@ -26,7 +26,7 @@ RPMCounter<9, 2, 8500, 200000, 2> counter;
 Trigger trigger(TRIGGER_FALLING, 200, ignition, NULL, 1000000, timeout, NULL);
 
 void draw(uint32_t rpm) {
-  int bar = rpm / 250;
+  int bar = rpm / 125;
 
   mData color = mBlue;
   mData divisionColor = mLightBlue;
@@ -42,14 +42,14 @@ void draw(uint32_t rpm) {
   }
 
   for (int i = 0; i < NUMLEDS; i++) {
-    if (i <= bar) {
-      if ((i + 1) % 4 == 0) {
+    if (i < bar) {
+      if ((i + 1) % 8 == 0) {
         strip.leds[i] = divisionColor;
       } else {
         strip.leds[i] = color;
       }
     } else {
-      if ((i + 1) % 4 == 0) {
+      if ((i + 1) % 8 == 0) {
         strip.leds[i] = mWhite;
       } else {
         strip.leds[i] = mBlack;
@@ -61,8 +61,7 @@ void draw(uint32_t rpm) {
 }
 
 void timeout(void *) {
-  strip.clear();
-  strip.show();
+  draw(0);
 }
 
 void ignition(uint32_t timestamp, void *) {
@@ -77,8 +76,15 @@ void setup() {
   strip.setBrightness(48);
   strip.clear();
   strip.show();
+
+  for (int rpm = 0; rpm < 9000; rpm+= 50) {
+    draw(rpm);
+  }
+  for (int rpm = 9000; rpm >= 0; rpm-= 50) {
+    draw(rpm);
+  }
 }
 
 void loop() {
-  trigger.update(digitalRead(IGNITION_PIN), micros());
+  trigger.update(digitalRead(IGNITION_PIN), micros()); 
 }
