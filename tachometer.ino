@@ -8,6 +8,7 @@ const int HIGH_BORDER = 7500;
 
 const int STRIPE_NUMLEDS = 72;
 const int STRIPE_PIN = 7;
+const int STIPE_BRIGHTNESS = 48;
 const byte IGNITION_PIN = 4;
 
 const int COUNTER_MAX_RPM = 8500;
@@ -93,7 +94,7 @@ void setup() {
   Serial.begin(115200);
   pinMode(IGNITION_PIN, INPUT);
 
-  stripe.setBrightness(48);
+  stripe.setBrightness(STIPE_BRIGHTNESS);
   stripe.clear();
   stripe.show();
 

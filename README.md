@@ -29,6 +29,7 @@ SWITCH_BORDER | 6500 | Highest RPMs for effecient acceleration range
 HIGH_BORDER | 7500 | Red zone RPMs
 STRIPE_NUMLEDS | 72 | Amount of leds in stripe
 STRIPE_PIN | 7 | Output pin for led
+STIPE_BRIGHTNESS | 48 | Overall stripe brightness
 IGNITION_PIN | 4 | Input pin for ignition signal
 COUNTER_MAX_RPM | 8500 | Maximum accounted RPMs
 COUNTER_IGNITION_SCALING | 2 | How many signal edges happen for single engine rotation
