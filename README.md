@@ -22,7 +22,7 @@ For generic 4-stroke engine having ignition signal twice per engine rotate it's 
 ### Configuration
 
 Parameter | Default value | Meaning
------------------------------------
+----------|---------------|--------
 LOW_BORDER | 3500 | Lowest RPMs for effecient acceleration range
 SWITCH_BORDER | 6500 | Highest RPMs for effecient acceleration range
 HIGH_BORDER | 7500 | Red zone RPMs
