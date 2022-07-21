@@ -6,10 +6,18 @@ const int LOW_BORDER = 3500;
 const int SWITCH_BORDER = 6500;
 const int HIGH_BORDER = 7500;
 
-const int NUMLEDS = 72;
-const int STRIP_PIN = 7;
-const int MAX_RECENT=16;
+const int STRIPE_NUMLEDS = 72;
+const int STRIPE_PIN = 7;
 const byte IGNITION_PIN = 4;
+
+const int COUNTER_MAX_RPM = 8500;
+const int COUNTER_IGNITION_SCALING = 2;
+const int COUNTER_IGNITION_DEPTH = 8;
+const long COUNTER_LATENCY_MKS = 200000;
+
+const int TRIGGER_EDGE = TRIGGER_FALLING;
+const long TRIGGER_ASSURE_MKS = 200;
+const long TRIGGER_TIMEOUT_MKS = 1000000;
 
 const int dL = 80;
 const int dH = 128;
@@ -29,9 +37,9 @@ mData mLightRed    = mRGB(H, L, L);
 
 void ignition(uint32_t timestamp, void * arg);
 void timeout(void *);
-microLED< NUMLEDS, STRIP_PIN, MLED_NO_CLOCK, LED_WS2812, ORDER_GRB, CLI_LOW> strip;
-RPMCounter<9, 2, 8500, 200000, 2> counter;
-Trigger trigger(TRIGGER_FALLING, 200, ignition, NULL, 1000000, timeout, NULL);
+microLED< STRIPE_NUMLEDS, STRIPE_PIN, MLED_NO_CLOCK, LED_WS2812, ORDER_GRB, CLI_LOW> stripe;
+RPMCounter<COUNTER_IGNITION_DEPTH + 1, COUNTER_IGNITION_SCALING, COUNTER_MAX_RPM, COUNTER_LATENCY_MKS, 2> counter;
+Trigger trigger(TRIGGER_EDGE, TRIGGER_ASSURE_MKS, ignition, NULL, TRIGGER_ASSURE_MKS, timeout, NULL);
 
 void draw(uint32_t rpm) {
   int bar = rpm / 125;
@@ -53,23 +61,23 @@ void draw(uint32_t rpm) {
     inactiveColor = mDarkGreen;
   }
 
-  for (int i = 0; i < NUMLEDS; i++) {
+  for (int i = 0; i < STRIPE_NUMLEDS; i++) {
     if (i < bar) {
       if ((i + 1) % 8 == 0) {
-        strip.leds[i] = divisionColor;
+        stripe.leds[i] = divisionColor;
       } else {
-        strip.leds[i] = color;
+        stripe.leds[i] = color;
       }
     } else {
       if ((i + 1) % 8 == 0) {
-        strip.leds[i] = mWhite;
+        stripe.leds[i] = mWhite;
       } else {
-        strip.leds[i] = inactiveColor;
+        stripe.leds[i] = inactiveColor;
       }
     }
   }
   
-  strip.show();
+  stripe.show();
 }
 
 void timeout(void *) {
@@ -85,9 +93,9 @@ void setup() {
   Serial.begin(115200);
   pinMode(IGNITION_PIN, INPUT);
 
-  strip.setBrightness(48);
-  strip.clear();
-  strip.show();
+  stripe.setBrightness(48);
+  stripe.clear();
+  stripe.show();
 
   for (int rpm = 0; rpm < 9000; rpm+= 50) {
     draw(rpm);
