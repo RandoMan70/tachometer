@@ -6,6 +6,7 @@ Due to physical restrictions of stripe protocol it's limit is nearly 18k hits pe
 For generic 4-stroke engine having ignition signal twice per engine rotate it's nearly 9kRPM. Can be optimized for higher RPMs by having signal from one spark plug only.
 
 ### Operation
+Generic operation is quite simple: measure time between ignition hits and draw scale for accounted RPMs.
 
 ### Featuers
 - Input signal noise protection
